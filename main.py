@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import *
+from PyQt6.QtWidgets import *
 import os
-from PIL import Image
+from PIL import Image, ImageFilter
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import Qt
 
@@ -75,6 +75,18 @@ class WorkPhoto:
         self.image = self.image.transpose(Image.ROTATE_270)
         self.showImage()
 
+    def mirrorEffect(self):
+        self.image = self.image.transpose(Image.FLIP_LEFT_RIGHT)
+        self.showImage()
+
+    def sharpnessEffect(self):
+        self.image = self.image.filter(ImageFilter.SHARPEN)
+        self.showImage()
+
+    def BWeffect(self):
+        self.image = self.image.convert("L")
+        self.showImage()
+
 photoWork = WorkPhoto()
 
 def openFile():
@@ -93,6 +105,9 @@ listFileButton.currentRowChanged.connect(showImage)
 fileButton.clicked.connect(openFile)
 steerLeftButton.clicked.connect(photoWork.leftRotate)
 steerRightButton.clicked.connect(photoWork.rightRotate)
+mirrorButton.clicked.connect(photoWork.mirrorEffect)
+sharpnessButton.clicked.connect(photoWork.sharpnessEffect)
+BWButton.clicked.connect(photoWork.BWeffect)
 window.setLayout(mainLine)
 window.show()
 app.exec()
