@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import *
+from PyQt5.QtWidgets import *
 import os
 from PIL import Image, ImageFilter
 from PyQt5.QtGui import QImage, QPixmap
@@ -14,7 +14,9 @@ steerLeftButton = QPushButton("Вліво")
 steerRightButton = QPushButton("Вправо")
 mirrorButton = QPushButton("Дзеркало")
 sharpnessButton = QPushButton("Різкість")
-BWButton = QPushButton("Ч/Б")
+unSharpnessButton = QPushButton("Нерізкість")
+BWbutton = QPushButton("Ч/Б")
+erosionButton = QPushButton("Розмивання")
 
 listFileButton = QListWidget()
 
@@ -22,6 +24,7 @@ mainLine = QHBoxLayout()
 extraLine1 = QVBoxLayout()
 extraLine2 = QVBoxLayout()
 extraLine3 = QHBoxLayout()
+extraLine4 = QHBoxLayout()
 
 def pil2pixmap(im):
     if im.mode == "RGB":
@@ -49,8 +52,12 @@ extraLine3.addWidget(steerLeftButton)
 extraLine3.addWidget(steerRightButton)
 extraLine3.addWidget(mirrorButton)
 extraLine3.addWidget(sharpnessButton)
-extraLine3.addWidget(BWButton)
+extraLine3.addWidget(unSharpnessButton)
+extraLine3.addWidget(BWbutton)
 extraLine2.addLayout(extraLine3)
+
+extraLine4.addWidget(erosionButton)
+extraLine2.addLayout(extraLine4)
 
 class WorkPhoto:
     def __init__(self):
@@ -83,8 +90,16 @@ class WorkPhoto:
         self.image = self.image.filter(ImageFilter.SHARPEN)
         self.showImage()
 
+    def unSharpnessEffect(self):
+        self.image = self.image.filter(ImageFilter.UnsharpMask(radius=2, percent=150, threshold=3))
+        self.showImage()
+
     def BWeffect(self):
         self.image = self.image.convert("L")
+        self.showImage()
+
+    def erosionEffect(self):
+        self.image = self.image.filter(ImageFilter.BLUR)
         self.showImage()
 
 photoWork = WorkPhoto()
@@ -107,7 +122,11 @@ steerLeftButton.clicked.connect(photoWork.leftRotate)
 steerRightButton.clicked.connect(photoWork.rightRotate)
 mirrorButton.clicked.connect(photoWork.mirrorEffect)
 sharpnessButton.clicked.connect(photoWork.sharpnessEffect)
-BWButton.clicked.connect(photoWork.BWeffect)
+unSharpnessButton.clicked.connect(photoWork.unSharpnessEffect)
+BWbutton.clicked.connect(photoWork.BWeffect)
+erosionButton.clicked.connect(photoWork.erosionEffect)
+
+
 window.setLayout(mainLine)
 window.show()
 app.exec()
